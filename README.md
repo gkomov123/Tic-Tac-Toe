@@ -20,5 +20,5 @@ The game has the following features
 
 # Future TODOS
 - AI bot to play against ✅
-- Resizable board
-- Start menu
+- Resizable board ✅
+- Start menu ✅
