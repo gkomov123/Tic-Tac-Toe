@@ -19,6 +19,6 @@ The game has the following features
 <img width="175" height="146" alt="image" src="https://github.com/user-attachments/assets/71036540-30dd-4448-8ce9-0ec3c0661f02" />
 
 # Future TODOS
-- AI bot to play against
+- AI bot to play against ✅
 - Resizable board
 - Start menu
