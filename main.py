@@ -80,6 +80,47 @@ def handle_click(row, col):
         # We use the root window to schedule the delay
         bot_job = root.after(500 , trigger_bot_move)
 
+
+def show_menu():
+    global menu_frame, size_var
+
+    # Create container for the menu
+    menu_frame = tk.Frame(root)
+    menu_frame.pack(pady=20)
+
+    tk.Label(menu_frame, text='Tic Tac Toe Settings', font=('Helvetica', 24)).pack(pady=10)
+
+    # Number box for board size
+    tk.Label(menu_frame, text='Choose Board Size (3-10):').pack()
+    size_var = tk.IntVar(value=3) # Default 3
+    spin = tk.Spinbox(menu_frame, from_=3, to=10, textvariable=size_var, width=5)
+    spin.pack(pady=10)
+
+    # Start button
+    start_btn = tk.Button(menu_frame, text='Start Game', command=start_game)
+    start_btn.pack(pady=20)
+
+
+def start_game():
+    global BOARD_SIZE, matrix
+
+    # Hide Menu
+    menu_frame.pack_forget()
+
+    # Get board size
+    BOARD_SIZE = size_var.get()
+
+    # Create logic matrix
+    matrix = create_board(BOARD_SIZE)
+
+    # Draw grid
+    create_board_gui(BOARD_SIZE)
+
+
+def create_board_gui(size):
+    pass
+
+
 # Global State 🌍
 BOARD_SIZE = 3
 GAME_OVER = False
@@ -89,6 +130,8 @@ buttons = []
 score_x = 0
 score_o = 0
 bot_job = None
+menu_frame = None
+size_var = 3
 
 
 root = tk.Tk()
