@@ -4,8 +4,21 @@ from tkinter import messagebox
 from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score
 
 
+def clear_game_state():
+    global GAME_OVER, current_player, bot_thinking, bot_job
+
+    if bot_job:
+        root.after_cancel(bot_job)
+        bot_job = None
+
+    GAME_OVER = False
+    bot_thinking = False
+    current_player = 'X'
+
+
+
 def reset_current_game():
-    global GAME_OVER, current_player
+    global GAME_OVER, current_player, bot_thinking, bot_job
 
     # Remove old game frame
     game_frame.destroy()
@@ -17,9 +30,7 @@ def reset_current_game():
     # Build new GUI grid
     create_board_gui(BOARD_SIZE)
 
-    current_player = 'X'
-    GAME_OVER = False
-
+    clear_game_state()
 
 def trigger_bot_move():
     global current_player, bot_thinking
@@ -61,6 +72,7 @@ def make_move(row, col):
 
     if is_draw(matrix):
         messagebox.showinfo("Game Over", "It's a tie! 🤝")
+        bot_thinking = False
         GAME_OVER = True
 
         return True
@@ -107,12 +119,14 @@ def show_menu():
 
 
 def back_to_settings():
+
     # Hide game frame
     game_frame.destroy()
 
     # Show settings menu
     menu_frame.pack(pady=20)
 
+    clear_game_state()
 
 def start_game():
     global BOARD_SIZE, matrix
