@@ -1,41 +1,41 @@
 import tkinter as tk
 from tkinter import messagebox
+
 from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score
 
 
-def clear_board():
-    global current_player, matrix, GAME_OVER, bot_job
+def reset_current_game():
+    global GAME_OVER, current_player
 
-    if bot_job:
-        root.after_cancel(bot_job)
-        bot_job = None
+    # Remove old game frame
+    game_frame.destroy()
+
+    # Reset logic in logic.py
+    global matrix
+    matrix = create_board(BOARD_SIZE)
+
+    # Build new GUI grid
+    create_board_gui(BOARD_SIZE)
 
     current_player = 'X'
     GAME_OVER = False
 
-    # Reset buttons
-    for button_list in buttons:
-        for butn in button_list:
-            butn.config(text='', fg='black')
-
-    # Reset logic board
-    matrix = create_board(BOARD_SIZE)
-
 
 def trigger_bot_move():
-    global current_player
+    global current_player, bot_thinking
 
-    move = get_bot_move(matrix)
+    move = get_bot_move(matrix, BOARD_SIZE)
     if move:
         bot_row, bot_col = move
         bot_ended = make_move(bot_row, bot_col)
 
         if not bot_ended:
             current_player = toggle_player(current_player)
+            bot_thinking = False
 
 
 def make_move(row, col):
-    global current_player, GAME_OVER, score_x, score_o
+    global current_player, GAME_OVER, score_x_count, score_o_count, score_x_var, score_o_var
 
     # 1. Update the logic board (matrix)
     matrix[row][col] = current_player
@@ -44,30 +44,34 @@ def make_move(row, col):
     color = 'red' if current_player == 'X' else 'blue'
     buttons[row][col].config(text=current_player, fg=color)
 
-    # 3. Check for Win/Tie using our logic.py functions
+    # 3. Check for Win/Tie
     if check_winner(matrix):
         messagebox.showinfo("Game Over", f"Player {current_player} wins! 🎉")
         GAME_OVER = True
-        if current_player == 'X':
-            score_x = update_score(score_x)
-        else:
-            score_o = update_score(score_o)
-        score_label.config(text=f"X: {score_x} | O: {score_o}")
+        bot_thinking = False
 
-        return True # Return True if the game ended
+        if current_player == 'X':
+            score_x_count = update_score(score_x_count)
+            score_x_var.set(f"Player X: {score_x_count}")
+        else:
+            score_o_count = update_score(score_o_count)
+            score_o_var.set(f"Player O: {score_o_count}")
+
+        return True
 
     if is_draw(matrix):
         messagebox.showinfo("Game Over", "It's a tie! 🤝")
         GAME_OVER = True
+
         return True
 
     return False # Game continues
 
 
 def handle_click(row, col):
-    global current_player, GAME_OVER, bot_job
+    global current_player, GAME_OVER, bot_job, bot_thinking
 
-    if GAME_OVER or matrix[row][col] != '':
+    if GAME_OVER or matrix[row][col] != '' or bot_thinking:
         return
 
     # Human turn
@@ -78,6 +82,7 @@ def handle_click(row, col):
         current_player = toggle_player(current_player)
 
         # We use the root window to schedule the delay
+        bot_thinking = True
         bot_job = root.after(500 , trigger_bot_move)
 
 
@@ -101,6 +106,14 @@ def show_menu():
     start_btn.pack(pady=20)
 
 
+def back_to_settings():
+    # Hide game frame
+    game_frame.destroy()
+
+    # Show settings menu
+    menu_frame.pack(pady=20)
+
+
 def start_game():
     global BOARD_SIZE, matrix
 
@@ -118,7 +131,70 @@ def start_game():
 
 
 def create_board_gui(size):
-    pass
+    global game_frame, buttons, score_frame
+
+    # Clear the window of any existing game widgets
+    for widget in root.winfo_children():
+        if widget != menu_frame and widget != score_frame:
+            widget.destroy()
+
+
+    game_frame = tk.Frame(root)
+    game_frame.pack(expand=True, fill="both")
+
+    control_frame = tk.Frame(game_frame)
+    control_frame.grid(row=size, column=0, columnspan=size, sticky='we')
+
+
+    dynamic_font = ('Helvetica', int(100 / size), 'bold')
+
+    # 1. Configure the internal grid of game_frame to be stable
+    for i in range(size):
+        game_frame.grid_rowconfigure(i, weight=1, uniform="square_grid")
+        game_frame.grid_columnconfigure(i, weight=1, uniform="square_grid")
+
+    buttons = []
+    for r in range(size):
+        row_buttons = []
+        for c in range(size):
+            btn = tk.Button(
+                game_frame,
+                text='',
+                font=dynamic_font,
+                width=3,
+                height=1,
+                command=lambda row=r, col=c: handle_click(row, col)
+            )
+            btn.grid(row=r, column=c, sticky='nsew')
+            row_buttons.append(btn)
+        buttons.append(row_buttons)
+
+    # Reset button
+    reset_btn = tk.Button(control_frame, text="Reset", command=reset_current_game)
+    reset_btn.pack(side='left', expand=True, fill='x')
+
+    # Settings Button (Goes back to the menu)
+    settings_btn = tk.Button(control_frame, text="Settings", command=back_to_settings)
+    settings_btn.pack(side='right', expand=True, fill='x')
+
+
+    # Configure grid to be flexible
+    for i in range(size):
+        root.grid_rowconfigure(i + 1, weight=1, uniform='group1') # +1 because row 0 is for the score
+        root.grid_columnconfigure(i, weight=1, uniform='group1')
+
+
+def setup_scoreboard():
+    global score_x_var, score_o_var, score_frame
+
+    score_frame = tk.Frame(root, bg='lightgrey', pady=10)
+    score_frame.pack(fill='x')
+
+    score_x_var = tk.StringVar(value='Player X: 0')
+    score_o_var = tk.StringVar(value='Player O: 0')
+
+    tk.Label(score_frame, textvariable=score_x_var, font=("Helvetica", 14)).pack(side='left', padx=20)
+    tk.Label(score_frame, textvariable=score_o_var, font=("Helvetica", 14)).pack(side='right', padx=20)
 
 
 # Global State 🌍
@@ -127,51 +203,22 @@ GAME_OVER = False
 current_player = "X"
 matrix = create_board(BOARD_SIZE)
 buttons = []
-score_x = 0
-score_o = 0
+score_x_count = 0
+score_o_count = 0
+score_x_var = None
+score_o_var = None
 bot_job = None
 menu_frame = None
+game_frame = None
+score_frame = None
 size_var = 3
+bot_thinking = False
 
 
 root = tk.Tk()
 root.title('Tic Tac Toe')
 
-
-# Button and creation l ogic
-for r in range(BOARD_SIZE):
-    row_buttons = []
-    for c in range(BOARD_SIZE):
-        # Create button
-        btn = tk.Button(
-            root,
-            text='',
-            width=5,  # Adjusted width/height for larger font
-            height=2,
-            bg='white',
-            font=("Helvetica", 24, "bold"),  # Large font for game pieces
-            command=lambda row=r, col=c: handle_click(row, col)
-        )
-        # Place button
-        btn.grid(row=r + 1, column=c)
-        row_buttons.append(btn)
-    buttons.append(row_buttons)
-
-# Create reset button
-reset_btn = tk.Button(
-    root,
-    text='RESET',
-    width=5,
-    height=2,
-    bg='white',
-    fg='black',
-    font=("Helvetica", 14, "bold"),
-    command=clear_board
-    )
-reset_btn.grid(row=4, column=0, columnspan=3, sticky='we')
-
-# Score Board label
-score_label = tk.Label(root, text=f"X: {score_x} | O: {score_o}", font=("Helvetica", 16, "bold"))
-score_label.grid(row=0, column=0, columnspan=3)
+setup_scoreboard()
+show_menu()
 
 root.mainloop()

@@ -38,8 +38,8 @@ def create_board(board_s):
     return matrix
 
 
-def get_bot_move(board):
-    empty_cells = [(r ,c) for r in range(3) for c in range(3) if board[r][c] == '']
+def get_bot_move(board, board_s):
+    empty_cells = [(r ,c) for r in range(board_s) for c in range(board_s) if board[r][c] == '']
     return random.choice(empty_cells) if empty_cells else None
 
 
