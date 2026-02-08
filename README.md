@@ -8,6 +8,9 @@ The game has the following features
 - Functioning game logic
 - GUI
 - Win, loss, and tie prompts
+- Menu
+- Custom board size option
+- Bot player to play against
 
 # Images of the game
 <img width="312" height="421" alt="image" src="https://github.com/user-attachments/assets/79d09a65-a3a5-4e28-b3a5-aa03892b79f4" />
@@ -19,6 +22,13 @@ The game has the following features
 <img width="175" height="146" alt="image" src="https://github.com/user-attachments/assets/71036540-30dd-4448-8ce9-0ec3c0661f02" />
 
 # Future TODOS
+
+--------DONE-------------
 - AI bot to play against ✅
 - Resizable board ✅
 - Start menu ✅
+
+-----------TODO-------------------
+- Upgrade Bot logic to be better maybe add levels to the settings
+- Add a button to toggle between bot and pvp
+- Polish GUI
