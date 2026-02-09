@@ -27,8 +27,8 @@ The game has the following features
 - AI bot to play against ✅
 - Resizable board ✅
 - Start menu ✅
+- Add a button to toggle between bot and pvp ✅
 
 -----------TODO-------------------
 - Upgrade Bot logic to be better maybe add levels to the settings
-- Add a button to toggle between bot and pvp
 - Polish GUI
