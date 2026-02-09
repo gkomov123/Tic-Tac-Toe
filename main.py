@@ -4,6 +4,16 @@ from tkinter import messagebox
 from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score
 
 
+def toggle_mode():
+    global game_mode_bot, mode_btn_text
+
+    game_mode_bot = not game_mode_bot
+    if game_mode_bot:
+        mode_btn_text.set('Player vs AI')
+    else:
+        mode_btn_text.set('Player vs Player')
+
+
 def clear_game_state():
     global GAME_OVER, current_player, bot_thinking, bot_job
 
@@ -46,7 +56,7 @@ def trigger_bot_move():
 
 
 def make_move(row, col):
-    global current_player, GAME_OVER, score_x_count, score_o_count, score_x_var, score_o_var
+    global current_player, GAME_OVER, score_x_count, score_o_count, score_x_var, score_o_var, bot_thinking
 
     # 1. Update the logic board (matrix)
     matrix[row][col] = current_player
@@ -81,7 +91,7 @@ def make_move(row, col):
 
 
 def handle_click(row, col):
-    global current_player, GAME_OVER, bot_job, bot_thinking
+    global current_player, GAME_OVER, bot_job, bot_thinking, game_mode_bot
 
     if GAME_OVER or matrix[row][col] != '' or bot_thinking:
         return
@@ -89,9 +99,10 @@ def handle_click(row, col):
     # Human turn
     ended = make_move(row, col)
 
-    if not ended:
-        # Switch to bot
-        current_player = toggle_player(current_player)
+    # Switch player
+    current_player = toggle_player(current_player)
+
+    if not ended and game_mode_bot:
 
         # We use the root window to schedule the delay
         bot_thinking = True
@@ -99,7 +110,7 @@ def handle_click(row, col):
 
 
 def show_menu():
-    global menu_frame, size_var
+    global menu_frame, size_var, game_mode_bot, mode_btn_text
 
     # Create container for the menu
     menu_frame = tk.Frame(root)
@@ -116,6 +127,12 @@ def show_menu():
     # Start button
     start_btn = tk.Button(menu_frame, text='Start Game', command=start_game)
     start_btn.pack(pady=20)
+
+
+    # Game mode button
+    mode_btn_text = tk.StringVar(value='Player vs AI' if game_mode_bot else 'Player vs Player')
+    mode_btn = tk.Button(menu_frame, textvariable=mode_btn_text, command=toggle_mode)
+    mode_btn.pack(pady=20)
 
 
 def back_to_settings():
@@ -227,6 +244,8 @@ game_frame = None
 score_frame = None
 size_var = 3
 bot_thinking = False
+game_mode_bot = True
+mode_btn_text = None
 
 
 root = tk.Tk()
