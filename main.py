@@ -135,6 +135,13 @@ def show_menu():
     mode_btn.pack(pady=20)
 
 
+    # Bot Level selection menu
+    difficulty_options = ['Easy', 'Hard', 'Unbeatable']
+    bot_difficulty = tk.StringVar(value='Easy')
+
+    dropdown = tk.OptionMenu(menu_frame, bot_difficulty, *difficulty_options)
+    dropdown.pack(pady=20)
+
 def back_to_settings():
 
     # Hide game frame
