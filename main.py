@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score
+from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score, get_winning_combo
 
 
 # Global State 🌍
@@ -88,6 +88,14 @@ def make_move(row, col):
 
     # 3. Check for Win/Tie
     if check_winner(matrix):
+        win_combo_list = get_winning_combo(matrix)
+
+        # Get winning row, col or diagonal to paint green
+        for row_col_pair in win_combo_list:
+            r, c = row_col_pair
+            buttons[r][c].config(bg='green')
+        root.update_idletasks() # guarentee the winning line shows up before the messagebox cuz tkinter is on somethin
+
         messagebox.showinfo("Game Over", f"Player {current_player} wins! 🎉")
         GAME_OVER = True
         bot_thinking = False

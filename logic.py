@@ -45,6 +45,30 @@ def check_winner(board):
     return False
 
 
+def get_winning_combo(board):
+    for i in range(len(board)):
+
+        # Row check: Are all items in board[i] the same
+        if all(cell == board[i][0] != '' for cell in board[i]):
+            return [(i, c) for c in range(len(board))]
+
+        # Column check: Are all items in column i the same
+        column = [board[r][i] for r in range(len(board))]
+        if all(cell == column[0] != '' for cell in column):
+            return [(r, i) for r in range(len(board))]
+
+    # Check diagonals
+    main_diag = [board[i][i] for i in range(len(board))]
+    if all(cell == main_diag[0] != '' for cell in main_diag):
+        return [(i, i) for i in range(len(board))]
+
+    anti_diag = [board[i][len(board) - 1 - i] for i in range(len(board))]
+    if all(cell == anti_diag[0] != '' for cell in anti_diag):
+        return [(i, len(board) - 1 - i) for i in range(len(board)) ]
+
+    return []
+
+
 def toggle_player(c_player):
     return 'O' if c_player == 'X' else 'X'
 
