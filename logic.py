@@ -1,6 +1,27 @@
 import random
 
 
+def check_next_move(cells, board):
+
+    for empty_cell in cells:
+        r, c = empty_cell
+        board[r][c] = 'O'
+        if check_winner(board):
+            board[r][c] = ''
+            return empty_cell
+        board[r][c] = ''
+
+    for empty_cell in cells:
+        r, c = empty_cell
+        board[r][c] = 'X'
+        if check_winner(board):
+            board[r][c] = ''
+            return empty_cell
+        board[r][c] = ''
+
+    return random.choice(cells)
+
+
 def check_winner(board):
     for i in range(len(board)):
         # Row check: Are all items in board[i] the same
@@ -38,9 +59,22 @@ def create_board(board_s):
     return matrix
 
 
-def get_bot_move(board, board_s):
-    empty_cells = [(r ,c) for r in range(board_s) for c in range(board_s) if board[r][c] == '']
-    return random.choice(empty_cells) if empty_cells else None
+def get_bot_move(board, board_s, difficulty):
+    empty_cells = [(r, c) for r in range(board_s) for c in range(board_s) if board[r][c] == '']
+
+    if not empty_cells:
+        return None
+
+    if difficulty == 'Easy':
+        return random.choice(empty_cells)
+
+    elif difficulty == 'Hard':
+        return check_next_move(empty_cells, board)
+
+    elif difficulty == 'Unbeatable':
+        pass
+
+    return random.choice(empty_cells)
 
 
 def update_score(current_score):

@@ -45,7 +45,7 @@ def reset_current_game():
 def trigger_bot_move():
     global current_player, bot_thinking
 
-    move = get_bot_move(matrix, BOARD_SIZE)
+    move = get_bot_move(matrix, BOARD_SIZE, bot_difficulty.get())
     if move:
         bot_row, bot_col = move
         bot_ended = make_move(bot_row, bot_col)
@@ -110,7 +110,7 @@ def handle_click(row, col):
 
 
 def show_menu():
-    global menu_frame, size_var, game_mode_bot, mode_btn_text
+    global menu_frame, size_var, game_mode_bot, mode_btn_text, bot_difficulty
 
     # Create container for the menu
     menu_frame = tk.Frame(root)
@@ -123,10 +123,6 @@ def show_menu():
     size_var = tk.IntVar(value=3) # Default 3
     spin = tk.Spinbox(menu_frame, from_=3, to=10, textvariable=size_var, width=5)
     spin.pack(pady=10)
-
-    # Start button
-    start_btn = tk.Button(menu_frame, text='Start Game', command=start_game)
-    start_btn.pack(pady=20)
 
 
     # Game mode button
@@ -141,6 +137,12 @@ def show_menu():
 
     dropdown = tk.OptionMenu(menu_frame, bot_difficulty, *difficulty_options)
     dropdown.pack(pady=20)
+
+
+    # Start button
+    start_btn = tk.Button(menu_frame, text='Start Game', command=start_game)
+    start_btn.pack(pady=20)
+
 
 def back_to_settings():
 
@@ -253,6 +255,7 @@ size_var = 3
 bot_thinking = False
 game_mode_bot = True
 mode_btn_text = None
+bot_difficulty = None
 
 
 root = tk.Tk()
