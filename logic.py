@@ -72,9 +72,59 @@ def get_bot_move(board, board_s, difficulty):
         return check_next_move(empty_cells, board)
 
     elif difficulty == 'Unbeatable':
-        pass
+        score = float('-inf')
+        cords = (0, 0)
+
+        for cell in empty_cells:
+            r, c = cell
+            board[r][c] = 'O'
+            current_score = minimax(board, is_maximazing=False)
+            board[r][c] = ''
+            if score < current_score:
+                score = current_score
+                cords = r, c
+
+        return cords
 
     return random.choice(empty_cells)
+
+
+def minimax(board, is_maximazing):
+    win = 10
+    draw = 0
+
+
+    if check_winner(board):
+        return -win if is_maximazing else win
+    if is_draw(board):
+        return draw
+
+    empty_cells = [(r, c) for r in range(len(board)) for c in range(len(board)) if board[r][c] == '']
+    if is_maximazing:
+        best_score = float('-inf')
+
+        for cell in empty_cells:
+            r, c = cell
+            board[r][c] = 'O'
+            score = minimax(board, is_maximazing=False)
+            board[r][c] = ''
+            if best_score < score:
+                best_score = score
+
+        return best_score
+
+    else:
+        best_score = float('inf')
+
+        for cell in empty_cells:
+            r, c = cell
+            board[r][c] = 'X'
+            score = minimax(board, is_maximazing=True)
+            board[r][c] = ''
+            if best_score > score:
+                best_score = score
+
+        return best_score
 
 
 def update_score(current_score):
