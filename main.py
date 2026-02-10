@@ -4,6 +4,27 @@ from tkinter import messagebox
 from logic import check_winner, toggle_player, is_draw, get_bot_move, create_board, update_score
 
 
+# Global State 🌍
+BOARD_SIZE = 3
+GAME_OVER = False
+current_player = "X"
+matrix = create_board(BOARD_SIZE)
+buttons = []
+score_x_count = 0
+score_o_count = 0
+score_x_var = None
+score_o_var = None
+bot_job = None
+menu_frame = None
+game_frame = None
+score_frame = None
+size_var = 3
+bot_thinking = False
+game_mode_bot = True
+mode_btn_text = None
+bot_difficulty = None
+
+
 def toggle_mode():
     global game_mode_bot, mode_btn_text
 
@@ -235,27 +256,6 @@ def setup_scoreboard():
 
     tk.Label(score_frame, textvariable=score_x_var, font=("Helvetica", 14)).pack(side='left', padx=20)
     tk.Label(score_frame, textvariable=score_o_var, font=("Helvetica", 14)).pack(side='right', padx=20)
-
-
-# Global State 🌍
-BOARD_SIZE = 3
-GAME_OVER = False
-current_player = "X"
-matrix = create_board(BOARD_SIZE)
-buttons = []
-score_x_count = 0
-score_o_count = 0
-score_x_var = None
-score_o_var = None
-bot_job = None
-menu_frame = None
-game_frame = None
-score_frame = None
-size_var = 3
-bot_thinking = False
-game_mode_bot = True
-mode_btn_text = None
-bot_difficulty = None
 
 
 root = tk.Tk()
