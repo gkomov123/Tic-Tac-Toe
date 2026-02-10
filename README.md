@@ -11,6 +11,7 @@ The game has the following features
 - Menu
 - Custom board size option
 - Bot player to play against
+- Toggle button for game modes PvP or PvE
 
 # Images of the game
 <img width="312" height="421" alt="image" src="https://github.com/user-attachments/assets/79d09a65-a3a5-4e28-b3a5-aa03892b79f4" />
@@ -27,8 +28,8 @@ The game has the following features
 - AI bot to play against ✅
 - Resizable board ✅
 - Start menu ✅
+- Add a button to toggle between bot and pvp ✅
 
 -----------TODO-------------------
 - Upgrade Bot logic to be better maybe add levels to the settings
-- Add a button to toggle between bot and pvp
 - Polish GUI
